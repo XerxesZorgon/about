@@ -30,7 +30,7 @@ function ret = about(file)
   X(X==0) = [];
   ALL = cell2mat(textscan(X','%s'));
   % files in the current directory are also listet, so replace all file extensions
-  ALL = strrep(ALL, '.m', ''); 
+  ALL = unique(strrep(ALL, '.m', '')); 
  
   ## try to open file
   if ischar(file)
@@ -144,7 +144,7 @@ function ret = _identifyFunctions(str)
 
 	# 2. get a unique list of all functions and variales (we don't know if it's a function or a variable).
 	# "([abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]+)"
-	ret = unique(cell2mat(regexp(str, ["([" ["a":"z" "A":"Z" "0":"9" "_"] "]+)"], 'tokens')));
+	ret = unique(cell2mat(regexp(str, ["([" ["a":"z" "A":"Z" "0":"9" "_" "."] "]+)"], 'tokens')));
 
 
 endfunction
@@ -152,7 +152,7 @@ endfunction
 
 function ret = _identifyVars(str)
 
-  ret = unique(cell2mat(regexp(str,['(?m)^\s*([' ["a":"z" "A":"Z" "0":"9" "_"] ']+)\s*=.*?'], 'tokens')));
+  ret = unique(cell2mat(regexp(str,['(?m)^\s*([' ["a":"z" "A":"Z" "0":"9" "_" "."] ']+)\s*=.*?'], 'tokens')));
 	
 
 endfunction
