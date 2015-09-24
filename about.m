@@ -111,10 +111,11 @@ endfunction
 function ret = _linesOfCode(str)
 
   ret = struct();
-  ret.total    = columns(regexp(str,'\n', 'split'));
-  ret.comments = columns(cell2mat(regexp(str,'(?m)^\s*%(.*?)', 'tokens')));
-  ret.comments += columns(cell2mat(regexp(str,'(?m)^\s*#(.*?)', 'tokens')));
-  ret.code     = ret.total - ret.comments;
+  ret.blanklines = columns(regexp(str,'(?m)^\s*\n', 'tokens'));
+  ret.total      = columns(regexp(str,'\n', 'split'));
+  ret.comments   = columns(cell2mat(regexp(str,'(?m)^\s*%(.*?)', 'tokens')));
+  ret.comments  += columns(cell2mat(regexp(str,'(?m)^\s*#(.*?)', 'tokens')));
+  ret.code       = ret.total - ret.comments - ret.blanklines;
   
 endfunction
 
