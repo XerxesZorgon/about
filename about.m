@@ -14,14 +14,14 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{list} =} depfun (@var{file})
+## @deftypefn {Function File} {@var{list} =} about (@var{file})
 ## List dependencies of .m files.
 ##
 ## Currently only '-toponly' method is implemented
 ##
 ## @end deftypefn
 
-function ret = depfun(file)
+function ret = about(file)
 
   ## get all available functions
   X = completion_matches ("");
@@ -61,6 +61,9 @@ function ret = depfun(file)
     ret = struct();
     ret.functions = {};
     ret.shadowed  = {};
+    ret.variables = struct();
+    ret.variables.used = _identifyVars(str);
+    ret.linesOfCode = _linesOfCode(str);
     cell_ind_f = 1; # function cell index
     cell_ind_s = 1; # shadowed cell index
     for n = 1:columns(F)
@@ -75,7 +78,7 @@ function ret = depfun(file)
           % check if a function in the fail is shadowed a build-in function
           s_ind = find(strcmp(SHADOWED, F{1,n}));
           if ~isempty(s_ind)
-            ret.shadowed{cell_ind_s, 1} = [F{1,n} ' @ ' functionItself functionItselfExtension];
+            ret.shadowed{cell_ind_s, 1} = [F{1,n} ' @ ' functionItself functionItselfExtension ' -> ' which(ALL{ind})];
             cell_ind_s += 1;
           endif
           
@@ -86,6 +89,18 @@ function ret = depfun(file)
         endif
       endif
     endfor
+    
+    ret.variables.overloaded = {};
+    cell_ind_f = 1;
+    for n = 1:columns(ret.variables.used)
+      ind = find(strcmp(ALL, ret.variables.used{1,n}));
+      if ~isempty(ind)
+        ret.variables.overloaded{cell_ind_f, 1} = [ret.variables.used{1,n} ' -> ' which(ALL{ind})]; 
+        cell_ind_f += 1;
+      endif
+    endfor
+    
+    
 
   else
     error('file must be a char')
@@ -93,8 +108,17 @@ function ret = depfun(file)
 
 endfunction
 
+function ret = _linesOfCode(str)
 
-function ret   = _identifyFunktionsInFunction(str)
+  ret = struct();
+  ret.total    = columns(regexp(str,'\n', 'split'));
+  ret.comments = columns(cell2mat(regexp(str,'(?m)^\s*%(.*?)', 'tokens')));
+  ret.comments += columns(cell2mat(regexp(str,'(?m)^\s*#(.*?)', 'tokens')));
+  ret.code     = ret.total - ret.comments;
+  
+endfunction
+
+function ret = _identifyFunktionsInFunction(str)
   % get all subfunction or classdef methods of the file to check if it shadowed some build-in functions
 	ret = regexp(str, 'function \w*\s*=\s*(.*?)\(.*?', 'tokens');
   if ~isempty(ret)
@@ -125,17 +149,9 @@ function ret = _identifyFunctions(str)
 endfunction
 
 
-function ret = _identifyStrings(str)
+function ret = _identifyVars(str)
 
-	## FIXME
-	# When functionsnames are used as a Text in a string, the function is wrongly liste too
-	# the idea is to identify all strings separately....
-
-	#disp('first methode')
-	#regexp(str,'''(.[^'']*)''','tokens')
-	
-	#disp('second methode')
-	#regexp(str, '(?<=")[^"]+(?=")', 'match')
+  ret = unique(cell2mat(regexp(str,['(?m)^\s*([' ["a":"z" "A":"Z" "0":"9" "_"] ']+)\s*=.*?'], 'tokens')));
 	
 
 endfunction
