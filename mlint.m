@@ -18,6 +18,7 @@ function mlint(filename)
     endif
     
     ## check for code indent
+    ## ---------------------
     lint.indent.is = regexp(lineOfCode, '^(\s+).*?', 'tokens');
     if ~isempty(lint.indent.is)
       lint.indent.is = length(cell2mat(lint.indent.is{1}));
@@ -32,14 +33,39 @@ function mlint(filename)
       endif
     endif
     lint.indent.next = CheckforIndent(strtrim(lineOfCode)) + lint.indent.is;
-    
+    ## end check for code indent
+    ############################
+
+    ## check for shadowing functions
+    ## -----------------------------
+    if ~isempty(ret.variables.overloaded)
+      [pos, ind] = CheckVariable(lineOfCode, ret.variables.overloaded);
+      if ~isempty(pos)
+        fprintf("%s:%d@%d - variable shadows function: %s\n", filename, lint.line, pos, ret.variables.overloaded{ind})
+      end
+    endif
+    ## end check for shadowing functions
+    ####################################
      
     
   endwhile
   
+  fclose(fid);
+  
 endfunction
 
+function [pos, ind] = CheckVariable(lineOfCode, overloadedVar)
 
+  funcs = cell2mat(cell2mat(regexp(overloadedVar ,'(\w+) ->', 'tokens')));
+  ind   = strfind(lineOfCode , funcs);
+  ind   = find(~cellfun (@isempty, ind));
+  if isempty(ind)
+    pos = ind;
+  else
+    pos = strfind(lineOfCode, funcs{ind});
+  end
+  
+endfunction
 
 function [next, current] = CheckforIndent(lineOfCode)
 
