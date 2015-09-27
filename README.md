@@ -26,41 +26,38 @@ Currently it can happen that the PCRE1 library that is used by `regexp()` dies i
 
 # about()
 
-
-    >> about('mlint.m')
+    octave:1> about('mlint.m')
     ans =
-    
+
       scalar structure containing the fields:
-    
-        functions =
+
+        functions = 
         {
           [1,1] = about @ /home/markus/git/OctaveCodeAnalyzer/depfun/about.m
           [2,1] = all @ libinterp/corefcn/data.cc
-          [3,1] = break @
-          [4,1] = cell2mat @ /usr/share/octave/4.0.0/m/general/cell2mat.m
-          [5,1] = cellfun @ libinterp/corefcn/cellfun.cc
-          [6,1] = fclose @ libinterp/corefcn/file-io.cc
-          [7,1] = fgetl @ libinterp/corefcn/file-io.cc
-          [8,1] = find @ libinterp/corefcn/find.cc
-          [9,1] = fopen @ libinterp/corefcn/file-io.cc
-          [10,1] = fprintf @ libinterp/corefcn/file-io.cc
-          [11,1] = ischar @ libinterp/corefcn/strfns.cc
-          [12,1] = isempty @ libinterp/corefcn/data.cc
-          [13,1] = length @ libinterp/corefcn/data.cc
-          [14,1] = persistent @
-          [15,1] = regexp @ libinterp/corefcn/regexp.cc
-          [16,1] = strcmp @ libinterp/corefcn/strfns.cc
-          [17,1] = strfind @ libinterp/corefcn/strfind.cc
-          [18,1] = strtrim @ /usr/share/octave/4.0.0/m/strings/strtrim.m
-          [19,1] = struct @ libinterp/octave-value/ov-struct.cc
-          [20,1] = uint8 @ libinterp/octave-value/ov-uint8.cc
+          [3,1] = cell2mat @ /usr/share/octave/4.0.0/m/general/cell2mat.m
+          [4,1] = cellfun @ libinterp/corefcn/cellfun.cc
+          [5,1] = fclose @ libinterp/corefcn/file-io.cc
+          [6,1] = fgetl @ libinterp/corefcn/file-io.cc
+          [7,1] = find @ libinterp/corefcn/find.cc
+          [8,1] = fopen @ libinterp/corefcn/file-io.cc
+          [9,1] = fprintf @ libinterp/corefcn/file-io.cc
+          [10,1] = ischar @ libinterp/corefcn/strfns.cc
+          [11,1] = isempty @ libinterp/corefcn/data.cc
+          [12,1] = length @ libinterp/corefcn/data.cc
+          [13,1] = regexp @ libinterp/corefcn/regexp.cc
+          [14,1] = strcmp @ libinterp/corefcn/strfns.cc
+          [15,1] = strfind @ libinterp/corefcn/strfind.cc
+          [16,1] = strtrim @ /usr/share/octave/4.0.0/m/strings/strtrim.m
+          [17,1] = struct @ libinterp/octave-value/ov-struct.cc
+          [18,1] = uint8 @ libinterp/octave-value/ov-uint8.cc
         }
         shadowed = {}(0x0)
         variables =
 
           scalar structure containing the fields:
 
-            used =
+            used = 
             {
               [1,1] = current
               [1,2] = fid
@@ -71,11 +68,13 @@ Currently it can happen that the PCRE1 library that is used by `regexp()` dies i
               [1,7] = lint.indent
               [1,8] = lint.indent.is
               [1,9] = lint.indent.next
-              [1,10] = lint.line
-              [1,11] = next
-              [1,12] = pos
-              [1,13] = ret
-              [1,14] = wasLineBreak
+              [1,10] = lint.indent.size
+              [1,11] = lint.line
+              [1,12] = next
+              [1,13] = pos
+              [1,14] = ret
+              [1,15] = wasLineBreak
+              [1,16] =  currentIndentFactor
             }
             overloaded = {}(0x0)
 
@@ -84,8 +83,7 @@ Currently it can happen that the PCRE1 library that is used by `regexp()` dies i
           scalar structure containing the fields:
 
             blanklines =                   21
-            total =                  109
-            comments =                    9
-            code =                   79
-
+            total =                  114
+            comments =                   11
+            code =                   82
 
