@@ -153,6 +153,12 @@ endfunction
 function ret = _identifyVars(str)
 
   ret = unique(cell2mat(regexp(str,['(?m)^\s*([' ["a":"z" "A":"Z" "0":"9" "_" "."] ']+)\s*=.*?'], 'tokens')));
-	
+
+  tmp = regexp(str,'\[(.*?)\]\s*=','tokens');
+  if ~isempty(tmp)
+    tmp = regexp(cell2mat(tmp{1}),',','split');
+    ret = [ret tmp];
+  endif
+
 
 endfunction
