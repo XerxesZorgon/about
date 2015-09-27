@@ -9,21 +9,21 @@ Currently it can happen that the PCRE1 library that is used by `regexp()` dies i
 
 # mlint example
 
-> testfile()
+> testfile.m
 
     m = rand(100,100);
     index = find(m < 0.1);
     if isempty(index)
     disp('not found')
     end
-    
 
-    
-    >> mlint('testfile.m')
-    testfile.m:2@1 - variable shadows function: index -> /usr/share/octave/4.0.0/m/strings/index.m
-    testfile.m:3@12 - variable shadows function: index -> /usr/share/octave/4.0.0/m/strings/index.m
-    testfile.m:4 - code indent is 0, should be at least 2
-    
+
+    octave:1> mlint('testfile.m')
+    testfile.m:2:1 - variable shadows function: index -> /usr/share/octave/4.0.0/m/strings/index.m
+    testfile.m:3:12 - variable shadows function: index -> /usr/share/octave/4.0.0/m/strings/index.m
+    testfile.m:4 - code indent is 0, should be at least 2    
+
+
 # about()
 
 
