@@ -41,7 +41,7 @@ function mlint(filename)
     if ~isempty(ret.variables.overloaded)
       [pos, ind] = CheckVariable(lineOfCode, ret.variables.overloaded);
       if ~isempty(pos)
-        fprintf("%s:%d@%d - variable shadows function: %s\n", filename, lint.line, pos, ret.variables.overloaded{ind})
+        fprintf("%s:%d:%d - variable shadows function: %s\n", filename, lint.line, pos, ret.variables.overloaded{ind})
       end
     endif
     ## end check for shadowing functions
