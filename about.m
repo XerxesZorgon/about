@@ -157,7 +157,7 @@ function ret = _identifyVars(str)
   tmp = regexp(str,'\[(.*?)\]\s*=','tokens');
   if ~isempty(tmp)
     tmp = regexp(cell2mat(tmp{1}),',','split');
-    ret = [ret tmp];
+    ret = [ret tmp(~strcmp(strtrim(tmp), '~'))];
   endif
 
 
