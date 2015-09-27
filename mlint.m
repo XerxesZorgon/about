@@ -1,5 +1,6 @@
 function mlint(filename)
   
+
   fid = fopen(filename);
   ret = about(filename);
   lint = struct();
@@ -7,6 +8,9 @@ function mlint(filename)
   lint.indent = struct();
   lint.indent.is      = 0;
   lint.indent.next    = 0;
+  ## FIXME
+  ## ...better with input arguments
+  lint.indent.size    = 2;
 
   while true
 
@@ -27,12 +31,12 @@ function mlint(filename)
     endif
 
     if length(lineOfCode) > 0 && ~all(uint8(lineOfCode) == 32)
-      [~, currentIndentFactor] = CheckforIndent(strtrim(lineOfCode));
+      [~, currentIndentFactor] = CheckforIndent(strtrim(lineOfCode), lint.indent.size);
       if (lint.indent.is < (lint.indent.next + currentIndentFactor))
         fprintf("%s:%d - code indent is %d, should be at least %d\n", filename, lint.line, lint.indent.is, lint.indent.next)
       endif
     endif
-    lint.indent.next = CheckforIndent(strtrim(lineOfCode)) + lint.indent.is;
+    lint.indent.next = CheckforIndent(strtrim(lineOfCode), lint.indent.size) + lint.indent.is;
     ## end check for code indent
     ############################
 
@@ -67,7 +71,7 @@ function [pos, ind] = CheckVariable(lineOfCode, overloadedVar)
   
 endfunction
 
-function [next, current] = CheckforIndent(lineOfCode)
+function [next, current] = CheckforIndent(lineOfCode, IndentSize)
 
   # lineOfCode should be at least 5 characters long
   lineOfCode = [lineOfCode '     '];
@@ -80,18 +84,18 @@ function [next, current] = CheckforIndent(lineOfCode)
   if (strcmp(lineOfCode(1:2), 'if')) || (strcmp(lineOfCode(1:5), 'while')) || ...
     (strcmp(lineOfCode(1:3), 'for'))
     
-    next = 2;
+    next = IndentSize;
   elseif (strcmp(lineOfCode(1:3), 'end'))
-    next = -2;
+    next = IndentSize * (-1);
   else
     next = 0;
   endif
   
   if (strcmp(lineOfCode(1:4), 'else') == 1)
-    current = -2;
-    next    = 2;
+    current = IndentSize * (-1);
+    next    = IndentSize;
   elseif (strcmp(lineOfCode(1:3), 'end') == 1)
-    current = -2;
+    current = IndentSize * (-1);
   else
     current = 0;
   endif
@@ -102,7 +106,7 @@ function [next, current] = CheckforIndent(lineOfCode)
       wasLineBreak = true;
     elseif wasLineBreak
       wasLineBreak = false;
-      next = 2;
+      next = IndentSize;
     endif
   endif
 
