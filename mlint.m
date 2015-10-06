@@ -1,8 +1,15 @@
 function mlint(filename)
   
-
-  fid = fopen(filename);
-  ret = about(filename);
+  ret     = about(filename);
+  fid     = fopen(filename);
+  marker  = ftell (fid);
+  frewind (fid);
+  str     = fread(fid, 'char=>char').';
+  # U and UL are used for checking assigned but unused variables lates
+  U  = strfind (str, ret.variables.used);
+  UL = cellfun(@length, U);
+  fseek (fid, marker, SEEK_SET);
+  
   lint = struct();
   lint.line = 0;
   lint.indent = struct();
@@ -50,6 +57,19 @@ function mlint(filename)
     endif
     ## end check for shadowing functions
     ####################################
+    
+    ## check for unused variables
+    ## --------------------------
+    if ~isempty(ret.variables.used)
+      if any(UL == 1) # check only when a variable is only used one time
+        pos = cell2mat(strfind(lineOfCode, ret.variables.used(UL == 1)));
+        if ~isempty(pos)
+          fprintf("%s:%d:%d - variable is assigned but never used: %s\n", filename, lint.line, pos, ret.variables.used{UL == 1})
+        endif
+      endif
+    endif
+    ## end check for unused variables
+    ## ------------------------------
      
     
   endwhile
@@ -72,6 +92,7 @@ function [pos, ind] = CheckVariable(lineOfCode, overloadedVar)
 endfunction
 
 function [next, current] = CheckforIndent(lineOfCode, IndentSize)
+  # This function determine the state of Indent for current and for the next line
 
   # lineOfCode should be at least 5 characters long
   lineOfCode = [lineOfCode '     '];
