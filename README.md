@@ -12,7 +12,7 @@ Currently it can happen that the PCRE1 library that is used by `regexp()` dies i
 > testfile.m
 
     m = rand(100,100);
-    index = find(m < 0.1);
+    [index,auchdas] = find(m < 0.1);
     if isempty(index)
     disp('not found')
     end
