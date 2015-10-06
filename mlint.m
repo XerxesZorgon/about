@@ -1,5 +1,6 @@
 function mlint(filename)
   
+  # list of functions, variables etc comes from about()
   ret     = about(filename);
   fid     = fopen(filename);
   marker  = ftell (fid);
@@ -47,7 +48,7 @@ function mlint(filename)
     ## end check for code indent
     ############################
 
-    ## check for shadowing functions
+    ## check for shadowed functions
     ## -----------------------------
     if ~isempty(ret.variables.overloaded)
       [pos, ind] = CheckVariable(lineOfCode, ret.variables.overloaded);
@@ -55,7 +56,7 @@ function mlint(filename)
         fprintf("%s:%d:%d - variable shadows function: %s\n", filename, lint.line, pos, ret.variables.overloaded{ind})
       end
     endif
-    ## end check for shadowing functions
+    ## end check for shadowed functions
     ####################################
     
     ## check for unused variables
