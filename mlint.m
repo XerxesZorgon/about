@@ -4,9 +4,9 @@ function mlint(filename, varargin)
   p               = inputParser();
   p.CaseSensitive = true;
   p.FunctionName  = "mlint"; 
-  p.addOptional ("CodeIndent", true, @isbool);
-  p.addOptional ("ShadowFnc" , true, @isbool);
-  p.addOptional ("UnusedVar" , true, @isbool);
+  p.addParamValue ("CodeIndent", true, @isbool);
+  p.addParamValue ("ShadowFnc" , true, @isbool);
+  p.addParamValue ("UnusedVar" , true, @isbool);
   p.parse (varargin{:});
   
   # list of functions, variables etc comes from about()

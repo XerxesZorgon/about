@@ -18,11 +18,15 @@ Currently it can happen that the PCRE1 library that is used by `regexp()` dies i
     end
 
 
-    octave:1> mlint('testfile.m')
+    >> mlint('testfile.m')
     testfile.m:2:2 - variable shadows function: index -> /usr/share/octave/4.0.0/m/strings/index.m
     testfile.m:2:8 - variable is assigned but never used: auchdas
     testfile.m:3:12 - variable shadows function: index -> /usr/share/octave/4.0.0/m/strings/index.m
     testfile.m:4 - code indent is 0, should be at least 2
+    >> mlint('testfile.m', 'CodeIndent', false)
+    testfile.m:2:2 - variable shadows function: index -> /usr/share/octave/4.0.0/m/strings/index.m
+    testfile.m:2:8 - variable is assigned but never used: auchdas
+    testfile.m:3:12 - variable shadows function: index -> /usr/share/octave/4.0.0/m/strings/index.m
 
 
 # about()
