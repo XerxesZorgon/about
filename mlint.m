@@ -41,15 +41,15 @@ function mlint(filename, varargin)
     marker  = ftell (fid);
     str     = fread(fid, 'char=>char').';
     # U and UL are used for checking assigned but unused variables later
-    U  = strfind (str, ret.variables.used);
-    UL = cellfun(@length, U);
+    U       = strfind (str, ret.variables.used);
+    UL      = cellfun(@length, U);
     fseek (fid, marker, SEEK_SET);
   endif
   
   # init counts
-  lint = struct();
-  lint.line = 0;
-  lint.indent = struct();
+  lint                = struct();
+  lint.line           = 0;
+  lint.indent         = struct();
   lint.indent.is      = 0;
   lint.indent.next    = 0;
   lint.indent.size    = p.Results.IndentSize;
