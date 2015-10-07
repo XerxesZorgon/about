@@ -228,22 +228,27 @@ Currently it can happen that the PCRE1 library that is used by `regexp()` dies i
 
             
 
-# about about.m
+            
+# about this
 
-1. determine every available function, script and constant when calling the function (list is unique and leading + trailing whitespace are removed). var ALL
-2. open the file and add file itself to a reserved list which will be sorted out from out ALL list
-3. call ` _identifyFunctions(str)` which tries to list all functions and varialbes (no comments and no strings). at this point, we can't determine if a result is a variable or a function.
+caution, bad english follows
+
+## about about.m
+
+1. determine every available function, script and constant when calling about. result is a unique list
+2. open the file and add the file itself to a reserved list which will be sorted out from list which was created before
+3. call ` _identifyFunctions(str)` which tries to list all functions and variables (no comments and no strings). at this point, we can't determine if a result is a variable or a function.
 4. identify functions which are declared in the same file with `_identifyFunktionsInFunction(str)`
 5. identify variables with `_identifyVars(str)`. this is everything in front of a ` = ` .
-6. in a process of elimination functions and shadows functions are matched.
-7. in a 2nd process of elimination variables are determined which overloads a function.
+6. in a process of elimination, functions and shadow functions are assigned.
+7. in a 2nd process of elimination variables are assigned to "overloads a function" or not.
 
-# about mlint.m
+## about mlint.m
 
-1. `about()` is called to get a list of functions, shadowed functions, variables and overloaded variables.
+1. `about()` is called to get a list of: functions, shadowed functions, variables and overloaded variables.
 2. when mlint should inform about unused variables, the file is read-in at once to determine the count of matches for earch variable. 
-3. now mlint start iterating over each line. it checks first for the code indent in the current line and determine on this base the code indent of the next line. this is done by calling `CheckforIndent()` two times.
-4. the next is checking for overloaded variables with `CheckVariable()`
+3. now mlint start iterating over each line. it checks first for the code indent in the current line and determine the code indent of the next line. this is done by calling `CheckforIndent()` two times.
+4. the next check is for overloaded variables: `CheckVariable()`
 5. the last check is for assigned but never used variables on base of what was done in step 2.
 
 step 3, 4 and 5 are repeated for every line of code to determine the line and position where it happen.
