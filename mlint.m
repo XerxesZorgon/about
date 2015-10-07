@@ -1,3 +1,26 @@
+## Copyright (C) 2015 Markus Bergholz <markuman@gmail.com>
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
+
+## -*- texinfo -*-
+## @deftypefn {Function File} mlint (@var{file})
+## Static code analysis
+##
+##
+## @end deftypefn
+
+
 function mlint(filename, varargin)
 
   # input check
@@ -7,18 +30,21 @@ function mlint(filename, varargin)
   p.addParamValue ("CodeIndent", true, @isbool);
   p.addParamValue ("ShadowFnc" , true, @isbool);
   p.addParamValue ("UnusedVar" , true, @isbool);
+  p.addParamValue ("IndentSize",    2, @isnumeric);
   p.parse (varargin{:});
   
   # list of functions, variables etc comes from about()
   ret     = about(filename);
   fid     = fopen(filename);
-  marker  = ftell (fid);
-  frewind (fid);
-  str     = fread(fid, 'char=>char').';
-  # U and UL are used for checking assigned but unused variables lates
-  U  = strfind (str, ret.variables.used);
-  UL = cellfun(@length, U);
-  fseek (fid, marker, SEEK_SET);
+  
+  if (p.Results.UnusedVar)
+    marker  = ftell (fid);
+    str     = fread(fid, 'char=>char').';
+    # U and UL are used for checking assigned but unused variables later
+    U  = strfind (str, ret.variables.used);
+    UL = cellfun(@length, U);
+    fseek (fid, marker, SEEK_SET);
+  endif
   
   # init counts
   lint = struct();
@@ -26,16 +52,15 @@ function mlint(filename, varargin)
   lint.indent = struct();
   lint.indent.is      = 0;
   lint.indent.next    = 0;
-  ## FIXME
-  ## ...better with input arguments
-  lint.indent.size    = 2;
+  lint.indent.size    = p.Results.IndentSize;
 
-  while true
+  # iterating over every line
+  while (true)
 
     lineOfCode = fgetl(fid);
     lint.line += 1;
     
-    if ~ischar(lineOfCode)
+    if (~ischar(lineOfCode))
       break
     endif
     
@@ -43,13 +68,13 @@ function mlint(filename, varargin)
     ## ---------------------
     if (p.Results.CodeIndent)
       lint.indent.is = regexp(lineOfCode, '^(\s+).*?', 'tokens');
-      if ~isempty(lint.indent.is)
+      if (~isempty(lint.indent.is))
         lint.indent.is = length(cell2mat(lint.indent.is{1}));
       else
         lint.indent.is = 0;
       endif
 
-      if length(lineOfCode) > 0 && ~all(uint8(lineOfCode) == 32)
+      if ((length(lineOfCode) > 0) && (~all(uint8(lineOfCode) == 32)))
         [~, currentIndentFactor] = CheckforIndent(strtrim(lineOfCode), lint.indent.size);
         if (lint.indent.is < (lint.indent.next + currentIndentFactor))
           fprintf("%s:%d - code indent is %d, should be at least %d\n", filename, lint.line, lint.indent.is, lint.indent.next)
@@ -63,9 +88,9 @@ function mlint(filename, varargin)
     ## check for shadowed functions
     ## -----------------------------
     if (p.Results.ShadowFnc)
-      if ~isempty(ret.variables.overloaded)
+      if (~isempty(ret.variables.overloaded))
         [pos, ind] = CheckVariable(lineOfCode, ret.variables.overloaded);
-        if ~isempty(pos)
+        if (~isempty(pos))
           fprintf("%s:%d:%d - variable shadows function: %s\n", filename, lint.line, pos, ret.variables.overloaded{ind})
         end
       endif
@@ -76,10 +101,10 @@ function mlint(filename, varargin)
     ## check for unused variables
     ## --------------------------
     if (p.Results.UnusedVar)
-      if ~isempty(ret.variables.used)
-        if any(UL == 1) # check only when a variable is only used one time
+      if (~isempty(ret.variables.used))
+        if (any(UL == 1)) # check only when a variable is only used one time
           pos = cell2mat(strfind(lineOfCode, ret.variables.used(UL == 1)));
-          if ~isempty(pos)
+          if (~isempty(pos))
             fprintf("%s:%d:%d - variable is assigned but never used: %s\n", filename, lint.line, pos, ret.variables.used{UL == 1})
           endif
         endif
