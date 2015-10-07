@@ -143,7 +143,6 @@ function ret = _identifyFunctions(str)
 	str = regexprep(str, mainregex, '$1');
 
 	# 2. get a unique list of all functions and variales (we don't know if it's a function or a variable).
-	# "([abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_]+)"
 	ret = unique(cell2mat(regexp(str, ["([" ["a":"z" "A":"Z" "0":"9" "_" "."] "]+)"], 'tokens')));
 
 
@@ -154,7 +153,7 @@ function ret = _identifyVars(str)
 
   ret = unique(cell2mat(regexp(str,['(?m)^\s*([' ["a":"z" "A":"Z" "0":"9" "_" "."] ']+)\s*=.*?'], 'tokens')));
 
-  tmp = regexp(str,'\[(.*?)\]\s*=','tokens');
+  tmp = regexp(str, [ '\[([' ["a":"z" "A":"Z" "0":"9" "_" "." "," " "] ']+)\]' ], 'tokens');
   if ~isempty(tmp)
     tmp = regexp(cell2mat(tmp{1}),',','split');
     ret = [ret tmp(~strcmp(strtrim(tmp), '~'))];
