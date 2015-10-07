@@ -4,7 +4,7 @@ in progress ...
 
 Currently it can happen that the PCRE1 library that is used by `regexp()` dies in a stack overflow. Octave will segfault then. 
 * One workaround is to compile pcre with option `--disable-stack-for-recursion`, but that slows performance. Another workaround is to increase the max stacksize of your system.
-* A long term fix will be an improvement of the used regular expressions (_it's not perfect yet. for exampe, `about('about.m')` result is partly useless_) ...identify variables is a huge challenge (for me)
+* A long term fix will be an improvement of the used regular expressions (_it's not perfect yet....identify variables is a huge challenge (for me))
 * A much longer term fix will be to port octave using PCRE2
 
 # mlint example
